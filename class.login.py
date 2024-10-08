@@ -58,7 +58,7 @@ class   Login_Page():
         email = self.email_entry.get()                                                                  ## assigning a name to the function of pulling the values that have been input into the email entry field
         password = self.password_entry.get()                                                            ## ''
     
-        connect = sqlite3.connect("practise_DB.db")                                                 ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
+        connect = sqlite3.connect("bike_shop_DB.db")                                                 ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
         c = connect.cursor()                                                                        ## assigning a name to the function of making a request to the connected database
 
         c.execute("SELECT Password FROM Login_Database WHERE Email=?", (email,))                ## "?" work as a placeholder for the tuple values- include the comma since its a tuple. Pulling the stored password to compare against hashed password from field entry
@@ -127,7 +127,7 @@ class Registration_Page():
         hashed_password = self.hash_password(password)
 
 
-        connect = sqlite3.connect("practise_DB.db")
+        connect = sqlite3.connect("bike_shop_DB.db")
         c = connect.cursor()
 
         c.execute("SELECT * FROM Login_Database WHERE Email=?" , (email,))                ## check if email already exists in database ## When using placeholders (?), the second argument must always be a tuple, even if it's a single value. add comma
