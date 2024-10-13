@@ -3,6 +3,7 @@ import mysql.connector
 import sqlite3
 from tkinter import messagebox
 import bcrypt                       ## Auto handles salting, widely recomended - research and reference
+from catalogue_page import Catalogue_Page
 
 
 
@@ -14,7 +15,7 @@ class   Login_Page():
 
     def __init__(self, root):
         self.root=root                                                                                ## with root = tkinter, we neeed to pass route through 
-        self.login_window=self.root                                                                   ## Creating the main page
+        self.login_window=tkinter.Toplevel(root)                                                                  ## Creating the main page
         self.login_window.title("Login_page")                                                         ## What its called
         self.login_window.geometry("400x300")                                                         ## Its size
         padd=20                                                             
@@ -68,6 +69,8 @@ class   Login_Page():
             stored_password = row[0]                                                            ## pulls the stored password from the database that correlates to the matching email
             if self.verify_password(password, stored_password):                                 ## if verify password passes its check, login success
                 messagebox.showinfo("Info", "Login Success")
+                self.open_catalogue_window()                                                    ## open the catalogue page
+                self.login_window.destroy()
             else: 
                 messagebox.showinfo("Info", "Incorrect Password")                               ## Else the password didnt correlate to the matching emails
             
@@ -77,6 +80,9 @@ class   Login_Page():
 
     def open_registration_window(self):
         Registration_Page(self.root)                        ## Pass the root over to the registration page
+
+    def open_catalogue_window(self):                        ## Pass root to catalogue page
+        Catalogue_Page(self.root)
 
 
 
@@ -145,19 +151,13 @@ class Registration_Page():
     def back_to_login(self):                    
 
         self.reg_window.destroy()           ## destroy registration instance
-                
+                  
 
-
-    
-
-
-
-
-if __name__ == "__main__":
-    root = tkinter.Tk()
-    app = Login_Page(root)
-    root.mainloop()
+                  
 
 
 
-## Need to add a back function from the register page to the login page
+
+
+## Need to add a login success to open catalogue user version page
+## Need to add a Admin Login success to open catalogue admin version page
