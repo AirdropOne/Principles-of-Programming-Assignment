@@ -1,6 +1,7 @@
 import tkinter
 import mysql.connector
 import sqlite3
+from login_registration import Login_Page
 
 
 
@@ -30,14 +31,11 @@ class Catalogue_Page():                                                    ## Ca
         self.login_button.grid(row=1, column=3)
 
     def open_login_page(self):
-        from login_registration import Login_Page
-        login_window = tkinter.Toplevel(self.catalogue_window)  # Open a new Toplevel from the current catalogue window
-        Login_Page(login_window)  # Pass the new login window to the Login_Page  
+        Login_Page(self.catalogue_window)  # open the login page (alrady defined as a top window)   
 
 
 
-## opening the login page from the catalogue page isnt working. Understand page traversal across classes and how to pass the root to new windows.
-## Build out the base catalogue page 
+
 
 
 

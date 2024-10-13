@@ -3,7 +3,6 @@ import mysql.connector
 import sqlite3
 from tkinter import messagebox
 import bcrypt                       ## Auto handles salting, widely recomended - research and reference
-from catalogue_page import Catalogue_Page
 
 
 
@@ -68,7 +67,7 @@ class   Login_Page():
         if row:                                                                                 ## if a matching email was found
             stored_password = row[0]                                                            ## pulls the stored password from the database that correlates to the matching email
             if self.verify_password(password, stored_password):                                 ## if verify password passes its check, login success
-                messagebox.showinfo("Info", "Login Success")
+                messagebox.showinfo("Info", "Login Success")                            ## Have this instead be a command to open a catalogue page updated for eith er user or admin experience
                 self.open_catalogue_window()                                                    ## open the catalogue page
                 self.login_window.destroy()
             else: 
@@ -80,9 +79,6 @@ class   Login_Page():
 
     def open_registration_window(self):
         Registration_Page(self.root)                        ## Pass the root over to the registration page
-
-    def open_catalogue_window(self):                        ## Pass root to catalogue page
-        Catalogue_Page(self.root)
 
 
 
