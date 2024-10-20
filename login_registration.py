@@ -27,7 +27,7 @@ class   Login_Page():
         self.info_email=tkinter.Label(self.login_window, text ="Email")                               ## Labeling the Email text
         self.info_email.grid(row=1, column=0)                                                         ## Placing that text within the grid
 
-        self.email_entry=tkinter.StringVar()                                                          ## Storing the entry as a string - WHY???? - SQL sanitisation???
+        self.email_entry=tkinter.StringVar()                                                          ## Storing the entry as a string - SQL sanitisation???
 
         self.email_entry=tkinter.Entry(self.login_window, textvariable=self.email_entry)              ## Assigning a name to en entry field           and            Specifying we want to use tkinters .StringVar as the text type for this field
         self.email_entry.grid(row=1, column=1)                                                        ## Placing that entry field in the grid
@@ -55,11 +55,11 @@ class   Login_Page():
         return bcrypt.checkpw(password.encode('utf-8'), stored_password)
 
     def login(self):
-        email = self.email_entry.get()                                                                  ## assigning a name to the function of pulling the values that have been input into the email entry field
-        password = self.password_entry.get()                                                            ## ''
+        email = self.email_entry.get()                                                          ## assigning a name to the function of pulling the values that have been input into the email entry field
+        password = self.password_entry.get()                                                    ## ''
     
-        connect = sqlite3.connect("bike_shop_DB.db")                                                 ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
-        c = connect.cursor()                                                                        ## assigning a name to the function of making a request to the connected database
+        connect = sqlite3.connect("bike_shop_DB.db")                                            ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
+        c = connect.cursor()                                                                    ## assigning a name to the function of making a request to the connected database
 
         c.execute("SELECT Password FROM Login_Database WHERE Email=?", (email,))                ## "?" work as a placeholder for the tuple values- include the comma since its a tuple. Pulling the stored password to compare against hashed password from field entry
     
@@ -67,7 +67,7 @@ class   Login_Page():
         if row:                                                                                 ## if a matching email was found
             stored_password = row[0]                                                            ## pulls the stored password from the database that correlates to the matching email
             if self.verify_password(password, stored_password):                                 ## if verify password passes its check, login success
-                messagebox.showinfo("Info", "Login Success")                            ## Have this instead be a command to open a catalogue page updated for eith er user or admin experience
+                messagebox.showinfo("Info", "Login Success")                                    ## Have this instead be a command to open a catalogue page updated for eith er user or admin experience
                 self.open_catalogue_window()                                                    ## open the catalogue page
                 self.login_window.destroy()
             else: 
@@ -154,6 +154,6 @@ class Registration_Page():
 
 
 
-
+## Need to input sanitize login and registration inputs ( currently 'nothing', 'nothing' will pass)
 ## Need to add a login success to open catalogue user version page
 ## Need to add a Admin Login success to open catalogue admin version page
