@@ -41,7 +41,7 @@ class Catalogue_Page():                                                    ## Ca
 
         self.catalogue_frame=tkinter.Frame(self.catalogue_window)                                           ## Frame for the displaying the products in
         self.catalogue_frame.grid(row=3, column=0, columnspan=4)    
-        ##self.display_products(self.pull_products())                                                       ## Displaying the products in the frame, pulled from the database
+        self.display_products(self.pull_products())                                                       ## Displaying the products in the frame, pulled from the database
 
 
 
@@ -55,16 +55,27 @@ class Catalogue_Page():                                                    ## Ca
         connect = sqlite3.connect("bike_shop_DB.db")                                                ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
         c = connect.cursor() 
 
-        c.execute("SELECT name, catagory, price FROM Product_Database")                             ## Pulling the name, catagory and price from the products table
+        c.execute("SELECT name, catagory, price, quantity FROM Product_Database")                             ## Pulling the name, catagory and price from the products table
         rows=c.fetchall()       
         return rows                                                                                 ## fetching all the rows in the table and returning them
 
 
-    ##def display_products(self):                           ## take the products pulled from the database and but them into the frame
+    def display_products(self, products):                           ## take the products pulled from the database and but them into the frame
+        for widget in self.catalogue_frame.winfo_children():          ## for each widget in the frame
+            widget.destroy()                                         ## destroy the widget to clear previous products displayed
+        
+        for row in self.pull_products():                            ## for each row in the pulled products
+            product_label=tkinter.Label(self.catalogue_frame, text=row[0] + " " + row[1] + " " + str(row[2]) + " " + str(row[3]))   ## create a label for the product with the name, catagory, price and quantity  (price and quantity needs to be converted to a string) within the frame
+            product_label.pack()                                    ## pack the label into the frame to display the product
+
+        
 
 
+    #def search_products(self):
+     #   search_query=self.search_var.get().lower                          ## get the search query from the search field and convert it to lowercase
+      #  selected_catagory=self.catagory_var.get()                        ## get the selected catagory from the catagory combobox dropdown
 
-    ##def search_products(self):
+
 
 
 if __name__ == "__main__":

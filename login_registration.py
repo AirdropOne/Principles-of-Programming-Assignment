@@ -156,4 +156,4 @@ class Registration_Page():
 
 ## Need to input sanitize login and registration inputs ( currently 'nothing', 'nothing' will pass)
 ## Need to add a login success to open catalogue user version page
-## Need to add a Admin Login success to open catalogue admin version page
+## Need to add an Admin Login success to open catalogue admin version page
