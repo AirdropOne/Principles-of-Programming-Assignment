@@ -85,7 +85,7 @@ class Catalogue_Page():                                                    ## Ca
         for widget in self.catalogue_frame.winfo_children():          ## for each widget in the frame
             widget.destroy()                                         ## destroy the widget to clear previous products displayed
         
-        for row in self.pull_products():                            ## for each row in the pulled products
+        for row in products:                            ## for each row in the pulled products
             product_label=tkinter.Label(self.catalogue_frame, text=row[0] + " " + row[1] + " " + str(row[2]) + " " + str(row[3]))   ## create a label for the product with the name, catagory, price and quantity  (price and quantity needs to be converted to a string) within the frame
             product_label.pack()                                    ## pack the label into the frame to display the product
 
@@ -99,11 +99,12 @@ class Catalogue_Page():                                                    ## Ca
         filtered_products = self.pull_products(search_query=search_query, category=selected_category)
         self.display_products(filtered_products)    
 
+        print (search_query)
+        print (filtered_products)
+        print (selected_category)
+        
 
 if __name__ == "__main__":
     root = tkinter.Tk()
     app = Catalogue_Page(root)
     root.mainloop()
-
-
-    
