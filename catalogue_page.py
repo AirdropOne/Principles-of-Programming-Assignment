@@ -24,7 +24,7 @@ class Catalogue_Page():                                                    ## Ca
         self.search_entry=tkinter.Entry(self.catalogue_window, textvariable=self.search_var)
         self.search_entry.grid(row=1, column=1)
 
-        self.search_button=tkinter.Button(self.catalogue_window, text="Search")
+        self.search_button=tkinter.Button(self.catalogue_window, text="Search", command=self.search_products)
         self.search_button.grid(row=1, column=2)
 
         self.login_button=tkinter.Button(self.catalogue_window, text="Login", command=self.open_login_page)
@@ -51,12 +51,33 @@ class Catalogue_Page():                                                    ## Ca
 
 
 
-    def pull_products(self):
-        connect = sqlite3.connect("bike_shop_DB.db")                                                ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
+    def pull_products(self, search_query=None, category=None):                         ## function to pull the products from the database also using search query and category choices as parameters
+        connect = sqlite3.connect("bike_shop_DB.db")                                             ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
         c = connect.cursor() 
 
-        c.execute("SELECT name, catagory, price, quantity FROM Product_Database")                             ## Pulling the name, catagory and price from the products table
-        rows=c.fetchall()       
+        query="SELECT name, catagory, price, quantity FROM Product_Database"                     ##Basic query        ## Pulling the name, catagory and price from the products table  
+        params=[]
+        
+        if search_query or (category and category != "All Categories"):                          ## if there is a search query or a category selected
+            query += " WHERE"                                                                    ## add a where clause to the query to filter the results
+
+        if search_query:
+            query += " LOWER(name) LIKE ?"                                                       ## if there is a search query, add a clause to the query to filter the results by the name in lowercase
+            params.append(f'%{search_query}%')                                                   ## append the search query to the parameters    and    % around the search query to allow for partial matches to all products with the search term in them.   SQL injection here?
+        
+        if category and category != "All Categories":                                            ## if there is a category selected and it is not "All Categories"
+            if search_query:                                                                     ## if there is a search query
+                query += " AND"                                                                  ## add an "AND" clause to the query to filter the results by the selected category
+            query += " catagory=?"                                                               ## add a clause to the query to filter the results by the selected category
+            params.append(category)                                                              ## append the selected category to the parameters
+        
+        print(query)         
+        print(params)                                                                                   ## print the query and parameters to the console for debugging purposes
+        c.execute(query, params)
+        rows=c.fetchall()
+    
+        
+           
         return rows                                                                                 ## fetching all the rows in the table and returning them
 
 
@@ -71,11 +92,12 @@ class Catalogue_Page():                                                    ## Ca
         
 
 
-    #def search_products(self):
-     #   search_query=self.search_var.get().lower                          ## get the search query from the search field and convert it to lowercase
-      #  selected_catagory=self.catagory_var.get()                        ## get the selected catagory from the catagory combobox dropdown
+    def search_products(self):
+        search_query=self.search_var.get().lower                          ## get the search query from the search field and convert it to lowercase
+        selected_category=self.catagory_var.get()                         ## get the selected category from the catagory combobox dropdown
 
-
+        filtered_products = self.pull_products(search_query=search_query, category=selected_category)
+        self.display_products(filtered_products)    
 
 
 if __name__ == "__main__":
