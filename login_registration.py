@@ -3,7 +3,7 @@ import mysql.connector
 import sqlite3
 from tkinter import messagebox
 import bcrypt                       ## Auto handles salting, widely recomended - research and reference
-
+from Subclasses import Admin_Catalogue_Page, User_Catalogue_Page
 
 
 ## Object oriented approach, greater efficiency, more scalable - maybe make in C++ for better scalability as future concept since its better at that?
@@ -29,7 +29,7 @@ class   Login_Page():
 
         self.email_entry=tkinter.StringVar()                                                          ## Storing the entry as a string - SQL sanitisation???
 
-        self.email_entry=tkinter.Entry(self.login_window, textvariable=self.email_entry)              ## Assigning a name to en entry field           and            Specifying we want to use tkinters .StringVar as the text type for this field
+        self.email_entry=tkinter.Entry(self.login_window, textvariable=self.email_entry)              ## Assigning a name to en entry field           and            Specifying I want it to use tkinters .StringVar as the text type for this field
         self.email_entry.grid(row=1, column=1)                                                        ## Placing that entry field in the grid
 
 
@@ -51,7 +51,7 @@ class   Login_Page():
         self.create_account_button=tkinter.Button(self.login_window, text="Create Account", command=self.open_registration_window)                ## Assigning a name and adding text to create accountbutton       and      initiate page traversal??
         self.create_account_button.grid(row=4, column=1, pady=5)                                                        ## Placing the button in the grid
 
-    def verify_password(self, password, stored_password):                                           ##checks the password input, hashes it with crype then compares to the stored password on the database (defined the login function)
+    def verify_password(self, password, stored_password):                                           ##checks the password input, hashes it with bcrypt then compares to the stored password on the database (defined the login function)
         return bcrypt.checkpw(password.encode('utf-8'), stored_password)
 
     def login(self):
@@ -61,15 +61,24 @@ class   Login_Page():
         connect = sqlite3.connect("bike_shop_DB.db")                                            ## assigning a name to the funtion of connecting to my practise datatbase         and       remember the .db
         c = connect.cursor()                                                                    ## assigning a name to the function of making a request to the connected database
 
-        c.execute("SELECT Password FROM Login_Database WHERE Email=?", (email,))                ## "?" work as a placeholder for the tuple values- include the comma since its a tuple. Pulling the stored password to compare against hashed password from field entry
-    
+        c.execute("SELECT Password, Role FROM Login_Database WHERE Email=?", (email,))                ## "?" work as a placeholder for the tuple values- include the comma since its a tuple. Pulling the stored password to compare against hashed password from field entry
         row=c.fetchone()                                                                            ## goes one by one along a row looking for matching email
+        
         if row:                                                                                 ## if a matching email was found
-            stored_password = row[0]                                                            ## pulls the stored password from the database that correlates to the matching email
+            stored_password, Role = row                                                         ## pulls the stored password  and role from the database that correlates to the matching email on its row
             if self.verify_password(password, stored_password):                                 ## if verify password passes its check, login success
-                messagebox.showinfo("Info", "Login Success")                                    ## Have this instead be a command to open a catalogue page updated for eith er user or admin experience
-                self.open_catalogue_window()                                                    ## open the catalogue page
+                messagebox.showinfo("Info", "Login Success")                                    ## Have this instead be a command to open a catalogue page updated for eith er user or admin experience                           
                 self.login_window.destroy()
+                self.root.destroy()
+                new_root = tkinter.Tk()
+
+                if Role == 'Admin': 
+                    print("Admin Login")                                                        ## If the role is admin, print admin login
+                    Admin_Catalogue_Page(new_root)
+                else:
+                    print("User Login")                                                         ## Else print user login
+                    User_Catalogue_Page(new_root)
+                new_root.mainloop()
             else: 
                 messagebox.showinfo("Info", "Incorrect Password")                               ## Else the password didnt correlate to the matching emails
             
