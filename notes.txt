@@ -1,4 +1,5 @@
-Move subclasses into main catalogue file
-Call login_registration.py to create and manage login fields as needed 
-if Login is succsessful, pass role back to the original file [use return], destroy login window, (destroy the cata window and call the admin subclass) - in brackets happens in catalogue_page not login_registration
-Line 50 in cata page
+create subclasses (super.init())
+When logging in, return "Admin" or "User" in that function and close the window
+If type == "User":
+    Kill the catalogue window
+    Spawn a new window from the Logged_In subclass

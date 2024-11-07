@@ -3,7 +3,7 @@ import mysql.connector
 import sqlite3
 from tkinter import messagebox
 import bcrypt                       ## Auto handles salting, widely recomended - research and reference
-from Subclasses import Admin_Catalogue_Page, User_Catalogue_Page
+import re
 
 
 ## Object oriented approach, greater efficiency, more scalable - maybe make in C++ for better scalability as future concept since its better at that?
@@ -17,6 +17,9 @@ class   Login_Page():
         self.login_window=tkinter.Toplevel(root)                                                                  ## Creating the main page
         self.login_window.title("Login_page")                                                         ## What its called
         self.login_window.geometry("400x300")                                                         ## Its size
+        self.user_role = None
+        
+        
         padd=20                                                             
         self.login_window["padx"]=padd
         self.info_label=tkinter.Label(self.login_window, text ="Login Page")                          ## Labeling the top left
@@ -68,17 +71,16 @@ class   Login_Page():
             stored_password, Role = row                                                         ## pulls the stored password  and role from the database that correlates to the matching email on its row
             if self.verify_password(password, stored_password):                                 ## if verify password passes its check, login success
                 messagebox.showinfo("Info", "Login Success")                                    ## Have this instead be a command to open a catalogue page updated for eith er user or admin experience                           
-                self.login_window.destroy()
-                self.root.destroy()
-                new_root = tkinter.Tk()
-
+                
+                
                 if Role == 'Admin': 
-                    print("Admin Login")                                                        ## If the role is admin, print admin login
-                    Admin_Catalogue_Page(new_root)
+                    self.user_role = 'Admin'                                                ## If the role is admin, print admin login   
+                    self.login_window.destroy()
+                    print(self.user_role)
                 else:
-                    print("User Login")                                                         ## Else print user login
-                    User_Catalogue_Page(new_root)
-                new_root.mainloop()
+                    self.user_role = 'User'                                                        ## Else print user login
+                    print(self.user_role)
+                self.login_window.destroy()
             else: 
                 messagebox.showinfo("Info", "Incorrect Password")                               ## Else the password didnt correlate to the matching emails
             
@@ -89,7 +91,8 @@ class   Login_Page():
     def open_registration_window(self):
         Registration_Page(self.root)                        ## Pass the root over to the registration page
 
-
+    def get_user_role(self):
+        return self.user_role
 
 class Registration_Page():
 
@@ -138,6 +141,11 @@ class Registration_Page():
         hashed_password = self.hash_password(password)
 
 
+        valid_email = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'  ## the format an email follows
+        if not re.match(valid_email, email):                             ## if the email input doesnt match the format
+            messagebox.showinfo("Error", "Please enter a valid email address.")
+            return
+
         connect = sqlite3.connect("bike_shop_DB.db")
         c = connect.cursor()
 
@@ -163,6 +171,5 @@ class Registration_Page():
 
 
 
-## Need to input sanitize login and registration inputs ( currently 'nothing', 'nothing' will pass)
 ## Need to add a login success to open catalogue user version page
 ## Need to add an Admin Login success to open catalogue admin version page
